@@ -52,7 +52,8 @@ class Carousel extends React.Component<CarouselProps, CarouselInternalState> {
     focusOnSelect: false,
     centerMode: false,
     additionalTransfrom: 0,
-    pauseOnHover: true
+    pauseOnHover: true,
+    isRTL:false
   };
   private readonly containerRef: React.RefObject<HTMLDivElement>;
   private readonly listRef: React.RefObject<HTMLUListElement>;
@@ -132,8 +133,8 @@ class Carousel extends React.Component<CarouselProps, CarouselInternalState> {
     this.isInThrottle = isInThrottle;
   }
   public setTransformDirectly(position: number, withAnimation?: boolean) {
-    const { additionalTransfrom } = this.props;
-    const currentTransform = getTransform(this.state, this.props, position);
+    const { additionalTransfrom ,isRTL} = this.props;
+    const currentTransform =isRTL ? -getTransform(this.state, this.props, position):getTransform(this.state, this.props, position);
     this.transformPlaceHolder = position;
     if (this.listRef && this.listRef.current) {
       this.setAnimationDirectly(withAnimation);
@@ -662,24 +663,26 @@ class Carousel extends React.Component<CarouselProps, CarouselInternalState> {
     return this.state;
   }
   public renderLeftArrow(disbaled: boolean): React.ReactNode {
-    const { customLeftArrow } = this.props;
+    const { customLeftArrow,isRTL } = this.props;
     return (
       <LeftArrow
         customLeftArrow={customLeftArrow}
         getState={() => this.getState()}
         previous={this.previous}
         disabled={disbaled}
+        isRTL={isRTL}
       />
     );
   }
   public renderRightArrow(disbaled: boolean): React.ReactNode {
-    const { customRightArrow } = this.props;
+    const { customRightArrow ,isRTL} = this.props;
     return (
       <RightArrow
         customRightArrow={customRightArrow}
         getState={() => this.getState()}
         next={this.next}
         disabled={disbaled}
+        isRTL={isRTL}
       />
     );
   }
@@ -736,7 +739,8 @@ class Carousel extends React.Component<CarouselProps, CarouselInternalState> {
       additionalTransfrom,
       renderDotsOutside,
       renderButtonGroupOutside,
-      className
+      className,
+      isRTL
     } = this.props;
     if (process.env.NODE_ENV !== "production") {
       throwError(this.state, this.props);
@@ -761,11 +765,11 @@ class Carousel extends React.Component<CarouselProps, CarouselInternalState> {
     const disableRightArrow = !infinite && isRightEndReach;
 
     // this lib supports showing next set of items partially as well as center mode which shows both.
-    const currentTransform = getTransform(this.state, this.props);
+    const currentTransform = isRTL?-getTransform(this.state, this.props):getTransform(this.state, this.props);
     return (
       <>
         <div
-          className={`react-multi-carousel-list ${containerClass} ${className}`}
+          className={`react-multi-carousel-list ${containerClass} ${className} ${isRTL&&".rtl"}`}
           ref={this.containerRef}
         >
           <ul

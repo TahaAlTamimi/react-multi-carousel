@@ -114,3 +114,22 @@
     overflow: visible !important;
   }
 }
+
+.rtl{
+  direction: rtl;
+}
+
+.rtl.react-multiple-carousel__arrow--right{
+  left: calc(4% + 1px);
+  right: auto;
+}
+.rtl.react-multiple-carousel__arrow--left {
+  right: calc(4% + 1px);
+  left: auto;
+}
+.rtl.react-multiple-carousel__arrow--right::before {
+  content: "\e824";
+}
+.rtl.react-multiple-carousel__arrow--left::before {
+  content: "\e825";
+}
